@@ -37,8 +37,10 @@ A message might appear to prompt you to sync the project, click "Sync Now" to pr
 ### Setup
 ##### Sample setup codes in MainActivity
 ```java
+
+// implements delegate of SDK 
+// ViaBmsCtrlDelegate
 public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBmsCtrlDelegate {
-    ViaBmsCtrl viaBmsCtrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,41 +48,70 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
         setContentView(R.layout.activity_main);
 
         // Some codes...
+        
+        // configure bms sdk settings at first
+        // to enable alert
+        // to enable minisite feature and type of view (AUTO or LIST)
+        // to enable customer tracking feature
+        // to enable customer attendance feature
+        ViaBmsCtrl.settings(true, true,
+                true,  ViaBmsUtil.MinisiteViewType.LIST, null,
+                true, true,
+                true, 5, 5);
 
-        viaBmsCtrl = new ViaBmsCtrl();
-
-        // optional delegate
-        viaBmsCtrl.viaBmsCtrlDelegate = this;
-
-        // you can specify your customer information in order to enable attendance and tracking feature (optional)
-        viaBmsCtrl.initCustomer("qe7sua", "88268722", "khoa.zany@gmail.com");
-
-        // bms sdk setting (setting can change later and default values are false)
-        viaBmsCtrl.settings(true, true,true,true,true);
-
-        // initiate viatick bms sdk with your bms application sdk key (this function will not start the sdk service)
-        viaBmsCtrl.initSdk(this, "pcd9i08ok58199qu0jq6e8bbvbo9ve2rpuud7dgnpo26b4vc0re");
+        // method to attach delegate
+        // 4 callbacks
+        // sdkInited
+        // customerInited
+        // if attendance is enable
+        // checkin and checkout
+        ViaBmsCtrl.setDelegate(this);
+        
+        // this method must be called at first to do handshake with bms
+        // sdkInited callback will be called after initialization
+        ViaBmsCtrl.initSdk(this, "PASTE_YOUR_BMS_APP_SDK_KEY_HERE");
     }
 
     // Some codes...
-
-    // start sdk service
-    public void startSDK(View view) {
-        viaBmsCtrl.startBmsService();
+    
+    // this method will be called after sdk initilization done
+    // list of zones in the sdk application is passed here
+    @Override
+    public void sdkInited(boolean inited, List<ViaZone> zones) {
+        Log.d(TAG, "Sdk inited " + inited);
+        if (inited) {
+            // this method must be called in order to enable attendance and tracking feature
+            // authorizedZones is optional field
+	        // sdkInited callback will be called after initialization
+            ViaBmsCtrl.initCustomer("PASTE IDENTIFIER OF CUSTOMER HERE", "000000000", "example@email.com", zones);
+        }
     }
 
-    // end sdk service
-    public void stopSDK(View view) {
-        viaBmsCtrl.stopBmsService();
+    // this method will be called after customer processing done
+    @Override
+    public void customerInited(boolean inited) {
+        Log.d(TAG, "Customer Inited " + inited);
+    }
+
+    // this method will be called if customer checkin
+    @Override
+    public void checkin() {
+        Log.d(TAG, "Checkin Callback");
+    }
+
+    // this method will be called if customer checkout
+    @Override
+    public void checkout() {
+        Log.d(TAG, "Checkout Callback");
     }
 
     // override this method
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        // need to put this line of code in after super.onRequestPermissionsResult
-        viaBmsCtrl.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+        // must put this line of code in after super.onRequestPermissionsResult
+        ViaBmsCtrl.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     // override this method
@@ -88,13 +119,30 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
     public void onResume() {
         super.onResume();
 
-        // need to put this line of code in after super.onResume()
-        viaBmsCtrl.onResume();
+        // must put this line of code in after super.onResume()
+        ViaBmsCtrl.onResume();
     }
 
-    public void inited (boolean status) {
-      // do something after the SDK is init
-      Log.i("ViaBmsSdk", String.valueOf(status));
+    // start sdk service
+    public void startSDK(View view) {
+        // these methods are to check sdk initation and bms is running or not
+        boolean sdkInited = ViaBmsCtrl.isSdkInited();
+        boolean bmsRunning = ViaBmsCtrl.isBmsRunning();
+
+        if (!bmsRunning && sdkInited) {
+            Log.d(TAG, "Bms Starting");
+            
+            // this method is to start bms service if it is not running
+            // you can call this method to restart without calling initSdk again
+            ViaBmsCtrl.startBmsService();
+        }
+
+    }
+    
+    // stop sdk service
+    public void stopSDK(View view) {
+     // this method is to stop the bms service
+        ViaBmsCtrl.stopBmsService();
     }
 }
 ```
