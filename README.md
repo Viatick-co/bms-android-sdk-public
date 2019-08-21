@@ -1,11 +1,15 @@
 ### Installation
-- Download the [source.zip](https://github.com/Viatick-co/bms-android-sdk-public/archive/master.zip) code from Github and extract the zip file.
-- In Android Studio, go to ```File > New > Import Module```, choose the Source directory as the folder you have just extracted.
-- In New Module selection, only tick "Import" on the module with source location "bms-android-sdk" , untick all the rest (if any) then click "Finish".
-- Under your project ```Gradle Scripts```, go to the ```build.gradle (Module: app)``` file (be careful as there are 3 different ```build.gradle``` files). Under the ```dependencies``` block, add this line at the end of it:
+- Download the  `bms-android-sdk-release.aar` from Github.
+- In Android Studio, go to ```File > New > New Module > Import .JAR/.AAR Package```, choose the AAR file, then click `Finish
+- Make sure the library is listed at the top of your settings.gradle file, as shown here for library named `bms-android-sdk-realease`:
+`include ':app', ':bms-android-sdk-realease'`
+- Open the app module's `build.gradle` file and add new lines to the dependencies block as shown in the following snippet:
 
 ```gradle
-compile project(":bms-android-sdk")
+    implementation project(':bms-android-sdk-release')
+    implementation "com.android.support:design:27.1.1"
+    implementation "org.altbeacon:android-beacon-library:2.8.1"
+    implementation "com.squareup.picasso:picasso:2.7+"
 ```
 
 ##### The ```dependencies``` block now might look like:
