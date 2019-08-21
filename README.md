@@ -15,10 +15,20 @@
 ##### The ```dependencies``` block now might look like:
 ```gradle
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile project(":bms-android-sdk")
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    
+    // another dependencies
+
+    // bms dependencies
+    implementation project(':bms-android-sdk-release')
+    implementation "com.android.support:design:27.1.1"
+    implementation "org.altbeacon:android-beacon-library:2.8.1"
+    implementation "com.squareup.picasso:picasso:2.7+"
 }
 ```
 
