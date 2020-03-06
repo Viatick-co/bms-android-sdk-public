@@ -184,7 +184,8 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
         ViaBmsCtrl.stopBmsService();
     }
 
-    // call this method to open a device site URL inside the app
+    // open a device site URL (for example the site URL received
+    // upon scanning NFC Tag managed by BMS). Can only call after the SDK is initiated
     public void openDeviceSite(String url) {
         ViaBmsCtrl.openDeviceSite(url);
     }
