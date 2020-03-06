@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
           false, // tracking: whether to enable tracking feature and send tracking data to BMS
           false, // enableMQTT: whether to use MQTT or normal RESTful endpoint to send tracking data
           false, // attendance: whether to enable attendance feature
-          5, // checkinDuration: duration of the device staying in the authorized zones to be considered
+          5, // checkinDuration: duration of the device staying in the authorized zones to be considered "checked in"
           20, // checkoutDuration: duration of the device staying out of the authorized zones to be considered "checked out"
           requestDistanceBeacons, // requestDistanceBeacons: ibeacons that you want to return distance callback
           BmsEnvironment.DEV, //  bmsEnvironment: BMS environment, default is "PROD", other options are "DEV" and "CHINA"
