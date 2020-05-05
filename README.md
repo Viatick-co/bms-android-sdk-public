@@ -191,5 +191,12 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
     public void openDeviceSite(String url) {
         ViaBmsCtrl.openDeviceSite(url);
     }
+
+    // call when the main activity get destroyed,
+    // only necessary to call if proximityAlert is
+    // set to true
+    public void onDestroy() {
+      ViaBmsCtrl.onDestroy();
+    }
 }
 ```
