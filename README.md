@@ -192,6 +192,11 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
         ViaBmsCtrl.openDeviceSite(url);
     }
 
+    // stop all services, remove notification channel
+    public void destroySDK() {
+        ViaBmsCtrl.destroySDK();
+    }
+
     @Override
     public void onDestroy() {
       super.onDestroy();
