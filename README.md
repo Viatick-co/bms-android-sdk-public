@@ -144,6 +144,13 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
 
     }
 
+    // callback when there's a new zone record added
+    // returns the uuid, major, minor of the beacon as well as the zones that the beacon is associated to 
+    @Override
+    public void onAddZoneRecord(String uuid, int major, int minor, List<ViaZone> zones) {
+      
+    }
+
     // override this method
     @Override
     public void onResume() {
