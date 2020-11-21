@@ -144,11 +144,20 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
 
     }
 
+    // callback when there's new proximity alert (contact) been established
+    void onNewProximityAlert(String uuid, int major, int minor, String deviceUUID);
+
+    // callback when Bluetooth state is switched to on
+    void onBluetoothStateOn();
+
+    // callback when Bluetooth state is switched to off
+    void onBluetoothStateOff();
+
     // callback when there's a new zone record added
-    // returns the uuid, major, minor of the beacon as well as the zones that the beacon is associated to 
+    // returns the uuid, major, minor of the beacon as well as the zones that the beacon is associated to
     @Override
     public void onAddZoneRecord(String uuid, int major, int minor, List<ViaZone> zones) {
-      
+
     }
 
     // override this method
