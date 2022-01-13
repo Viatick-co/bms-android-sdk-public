@@ -1,4 +1,5 @@
 ### Installation
+- Your project needs to support AndroidX and Java version >= 11;
 - Download the  `bms-android-sdk-release.aar` from Github.
 - In Android Studio, go to ```File > New > New Module > Import .JAR/.AAR Package```, choose the AAR file, then click `Finish
 - Make sure the library is listed at the top of your settings.gradle file, as shown here for library named `bms-android-sdk-realease`:
@@ -9,6 +10,8 @@
     implementation project(':bms-android-sdk-release')
     implementation "com.android.support:design:27.1.1"
     implementation "com.squareup.picasso:picasso:2.7+"
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
+    implementation 'com.mappedin.sdk:mappedin:4.0.0'
 ```
 
 ##### The ```dependencies``` block now might look like:
@@ -27,12 +30,27 @@ dependencies {
     implementation project(':bms-android-sdk-release')
     implementation "com.android.support:design:27.1.1"
     implementation "com.squareup.picasso:picasso:2.7+"
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
+    implementation 'com.mappedin.sdk:mappedin:4.0.0'
 }
 ```
 
 A message might appear to prompt you to sync the project, click "Sync Now" to proceed.
 
 ### Setup
+
+##### Including the map view on your activity layout where you want the map to be using FragmentContainerView
+
+```xml
+<androidx.fragment.app.FragmentContainerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fragment_map_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.viatick.bmsandroidsdk.view.BMSMapFragment">
+    </androidx.fragment.app.FragmentContainerView>
+```
+
 ##### Sample setup codes in MainActivity
 ```java
 
@@ -88,6 +106,16 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
         // sdkInited callback will be called after initialization
         // only call this after calling settings
         ViaBmsCtrl.initSdk(this, "PASTE_YOUR_BMS_APP_SDK_KEY_HERE");
+
+        // if you only need to use the map you can just call initMap instead of initSdk
+        // change "fragment_map_view" to the id of te FragmenMapView that you include in your activity layout
+        FragmentContainerView fcv = findViewById(R.id.fragment_map_view);
+        Fragment mapFragment = fcv.getFragment();
+        View childView = mapFragment.getView();
+
+        if (childView != null) {
+            ViaBmsCtrl.initMap(mapFragment, "PASTE_YOUR_BMS_APP_SDK_KEY_HERE");
+        }
     }
 
     // Some codes...
@@ -122,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
     public void checkout() {
         Log.d(TAG, "Checkout Callback");
     }
+
+    // addMarkers
 
     // it is callback of request tracking distance
     @Override
@@ -213,6 +243,36 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
         ViaBmsCtrl.destroySDK();
     }
 
+    // add a single marker to a zone in the map (can only be used after the map is initiated)
+    public void addMarker(String zoneName) {
+      // specify the html content of the marker to display
+      const htmlContent = "<p style=\"background: transparent; color: #eb4d4b;\">1</p>";
+      ViaBmsCtrl.addMarker(new MarkerInput(zoneName, htmlContent));
+    }
+
+    // add multiple markers to a zone in the map (can only be used after the map is initiated)
+    public void addMarkers() {
+      List<MarkerInput> marketInputs = new ArrayList<>();
+      marketInputs.add(new MarkerInput("Zone A", "<p style=\"color: #eb4d4b;\">1</p>"));
+      marketInputs.add(new MarkerInput("Zone B", "<p style=\"color: #eb4d4b\">2</p>"));
+
+      ViaBmsCtrl.addMarkers(marketInputs);
+    }
+
+    // get the BMS zones that is associated to this application
+    // results will be returned on onZonesLoaded (documented below)
+    // can only be used after the map or SDK is initiated
+    public void getZones() {
+      ViaBmsCtrl.getZones();
+    }
+
+    // get the list of last zone records per each customer
+    // results will be returned on onProperZoneRecordsLoaded (documented below)
+    // can only be used after the map or SDK is initiated
+    public void getLastProperZoneRecords() {
+      ViaBmsCtrl.getLastProperZoneRecords();
+    }
+
     @Override
     public void onDestroy() {
       super.onDestroy();
@@ -222,5 +282,34 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
       // set to true
       ViaBmsCtrl.onDestroy();
     }
+
+  // call after the map is initiated  
+  @Override
+   public void onMapInited (boolean status) {
+       if (status) {
+           // now you can add markers or call getZones/getLastProperZoneRecords
+           List<MarkerInput> marketInputs = new ArrayList<>();
+           marketInputs.add(new MarkerInput("Zone A", "<p style=\"color: #eb4d4b;\">1</p>"));
+           marketInputs.add(new MarkerInput("Zone B", "<p style=\"color: #eb4d4b\">2</p>"));
+
+           ViaBmsCtrl.addMarkers(marketInputs);
+           ViaBmsCtrl.getZones();
+           ViaBmsCtrl.getLastProperZoneRecords();
+       }
+   }
+
+   @Override
+   public void onZoneClicked(String zoneName) {
+      // Do something when a zone is clicked
+   }
+
+   public void onZonesLoaded(List<BmsZone> zones) {
+       // Do something with the zones returned
+   }
+
+   @Override
+   public void onProperZoneRecordsLoaded(List<BmsZoneRecord> zoneRecords) {
+       // Do something with the zone records returned
+   }
 }
 ```
