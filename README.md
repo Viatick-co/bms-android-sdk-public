@@ -250,6 +250,15 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
       ViaBmsCtrl.addMarker(new MarkerInput(zoneName, htmlContent));
     }
 
+    // you can also use addMarker to have a "blue dot" like marker to visualize a user's current zone
+    // possibly onAddZoneRecord callback can be used to retrieve the zone to be visualized
+    // We provided you a sample HTML content for a blue dot at ViaBmsCtrl.BLUEDOT_CONTENT
+    // Refer to blueDotSimulation
+    public void addBlueDot(String zoneName) {
+      // specify the html content of the marker to display
+      ViaBmsCtrl.addMarker(new MarkerInput(zoneName, ViaBmsCtrl.BLUEDOT_CONTENT));
+    }
+
     // add multiple markers to a zone in the map (can only be used after the map is initiated)
     public void addMarkers() {
       List<MarkerInput> marketInputs = new ArrayList<>();
@@ -257,6 +266,11 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
       marketInputs.add(new MarkerInput("Zone B", "<p style=\"color: #eb4d4b\">2</p>"));
 
       ViaBmsCtrl.addMarkers(marketInputs);
+    }
+
+    // remove markers
+    public void removeMarkers(List<String> zoneNames) {
+      ViaBmsCtrl.removeMarkers(zoneNames);
     }
 
     // get the BMS zones that is associated to this application
