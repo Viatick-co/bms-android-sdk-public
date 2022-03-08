@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements ViaBmsCtrl.ViaBms
     // you can also use addMarker to have a "blue dot" like marker to visualize a user's current zone
     // possibly onAddZoneRecord callback can be used to retrieve the zone to be visualized
     // We provided you a sample HTML content for a blue dot at ViaBmsCtrl.BLUEDOT_CONTENT
-    // Refer to blueDotSimulation
+    // Refer to blueDotSimulation function on bms-sdk-android-map-example for sample
     public void addBlueDot(String zoneName) {
       // specify the html content of the marker to display
       ViaBmsCtrl.addMarker(new MarkerInput(zoneName, ViaBmsCtrl.BLUEDOT_CONTENT));
